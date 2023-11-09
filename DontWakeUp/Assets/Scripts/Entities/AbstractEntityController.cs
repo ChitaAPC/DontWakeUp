@@ -146,6 +146,6 @@ public abstract class AbstractEntityController : MonoBehaviour
     /// <param name="dir">A vector2 for the direction, where both x and y can be one of -1, 0 or +1.</param>
     public void MoveEntityOnDirection(Vector2 dir)
     {
-        rb.MovePosition(rb.position + (dir.normalized * movement_speed * Time.deltaTime));
+        rb.MovePosition(rb.position + (dir.normalized * movement_speed * Time.fixedDeltaTime));
     }
 }

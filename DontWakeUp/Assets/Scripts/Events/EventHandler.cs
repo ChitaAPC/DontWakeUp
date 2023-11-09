@@ -87,6 +87,19 @@ public class EventHandler
     #endregion
 
 
+    private BattleStartEvent _battleStartEvent = null;
+    public BattleStartEvent BattleStartEvent
+    {
+        get
+        {
+            if (_battleStartEvent == null)
+            {
+                _battleStartEvent = new BattleStartEvent();
+            }
+            return _battleStartEvent;
+        }
+    }
+
     //add your events below this line
 
 

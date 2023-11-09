@@ -41,7 +41,18 @@ public class PlayerController : AbstractEntityController
     private void FixedUpdate()
     {
         MoveEntityOnDirection(new Vector2(moveDirX, moveDirY));
+        
     }
 
-    
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        AbstractEntityController enemy = collision.gameObject.GetComponent<AbstractEntityController>();
+
+        if (enemy != null)
+        {
+            EventHandler.instance.BattleStartEvent.Invoke(this, enemy);
+        }
+    }
+
 }
