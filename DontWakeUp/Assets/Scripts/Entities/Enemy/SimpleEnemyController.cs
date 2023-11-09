@@ -23,7 +23,7 @@ public class SimpleEnemyController : AbstractEntityController
     private void InnitialiseProperties()
     {
         float hp = 10f;
-        float movement_speed = 5f;
+        float movement_speed = 4f;
         float attack_physical = 5f;
         float attack_emotional = 5f;
 
