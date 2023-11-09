@@ -144,8 +144,19 @@ public abstract class AbstractEntityController : MonoBehaviour
     /// the direction should be -1, 0 or +1 for x and y.
     /// </summary>
     /// <param name="dir">A vector2 for the direction, where both x and y can be one of -1, 0 or +1.</param>
-    public void MoveEntityOnDirection(Vector2 dir)
+    public void MoveEntityOnDirection(Vector2 dir, bool normalised = true)
     {
-        rb.MovePosition(rb.position + (dir.normalized * movement_speed * Time.fixedDeltaTime));
+
+        Vector2 wantedDir;
+
+        if (normalised)
+        {
+            wantedDir = dir.normalized;
+        }
+        else
+        {
+            wantedDir = dir;
+        }
+        rb.MovePosition(rb.position + (wantedDir * movement_speed * Time.fixedDeltaTime));
     }
 }
