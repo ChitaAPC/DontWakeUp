@@ -34,8 +34,8 @@ public class PlayerController : AbstractEntityController
 
     private void Update()
     {
-        moveDirX = Input.GetAxis("Horizontal");
-        moveDirY = Input.GetAxis("Vertical");
+        moveDirX = Input.GetAxisRaw("Horizontal");
+        moveDirY = Input.GetAxisRaw("Vertical");
     }
 
     private void FixedUpdate()
