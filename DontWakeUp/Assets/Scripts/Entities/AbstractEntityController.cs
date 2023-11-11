@@ -11,6 +11,7 @@ public abstract class AbstractEntityController : MonoBehaviour
     public float maxHp { private set; get; }
 
     public float movement_speed { private set; get; }
+    public float combat_speed { private set; get; }
 
     public float attack_physical { private set; get; }
     public float attack_emotional { private set; get; }
@@ -18,7 +19,7 @@ public abstract class AbstractEntityController : MonoBehaviour
     public float armour_physical { private set; get; }
     public float armour_emotional { private set; get; }
 
-
+    
     private Rigidbody2D rb;
 
 
@@ -35,12 +36,14 @@ public abstract class AbstractEntityController : MonoBehaviour
 
     protected abstract void OnAwake();
 
-    protected void InnitialiseProperties(float maxHp, float movement_speed, float attack_physical, float attack_emotional,
+    protected void InnitialiseProperties(float maxHp, float movement_speed, float combat_speed,
+        float attack_physical, float attack_emotional,
         float armour_physical, float armour_emotional)
     {
         hp = maxHp;
         this.maxHp = maxHp;
         this.movement_speed = movement_speed;
+        this.combat_speed = combat_speed;
         this.attack_physical = attack_physical;
         this.attack_emotional = attack_emotional;
         this.armour_physical = armour_physical;
@@ -66,11 +69,20 @@ public abstract class AbstractEntityController : MonoBehaviour
     /// The function will then return True if it is dead after taking damage, False otherwise.
     /// </summary>
     /// <param name="dmg">The ammount of damage to be taken by the entity</param>
+    /// <param name="isPhysical">A flag that dictates if the incoming damage is physical</param>
     /// <returns>True if the new HP is bellow or equal to zero, False otherwise.</returns>
-    public bool TakeDamage(float dmg)
+    public bool TakeDamage(float dmg, bool isPhysical)
     {
-        hp -= dmg;
-        hp = Mathf.Max(0f, hp);
+        float damageToTake;
+        if (isPhysical)
+        {
+            damageToTake = Mathf.Max(0f, dmg - armour_physical);
+        }
+        else 
+        {
+            damageToTake = Mathf.Max(0f, dmg - armour_emotional);
+        }
+        hp = Mathf.Max(0f, hp - damageToTake);
         return hp <= 0f;
     }
 
@@ -159,4 +171,12 @@ public abstract class AbstractEntityController : MonoBehaviour
         }
         rb.MovePosition(rb.position + (wantedDir * movement_speed * Time.fixedDeltaTime));
     }
+
+    /// <summary>
+    /// A function that handles the battle action for the entity when it is controlled by the AI and returns a text description
+    /// </summary>
+    /// <param name="player">The player controller script to be used</param>
+    /// <returns>a text description of the action taken</returns>
+    public abstract string DoAIAction(AbstractEntityController player);
+
 }

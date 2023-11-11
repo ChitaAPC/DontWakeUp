@@ -17,13 +17,14 @@ public class PlayerController : AbstractEntityController
     {
         float hp = 10f;
         float movement_speed = 5f;
+        float combat_speed = 5f;
         float attack_physical = 5f;
         float attack_emotional = 5f;
 
-        float armour_physical = 1f;
-        float armour_emotional = 1f;
+        float armour_physical = 0f;
+        float armour_emotional = 0f;
 
-        InnitialiseProperties(hp, movement_speed, attack_physical, attack_emotional, armour_physical, armour_emotional);
+        InnitialiseProperties(hp, movement_speed, combat_speed, attack_physical, attack_emotional, armour_physical, armour_emotional);
     }
 
     private void InnitialiseMovmeent()
@@ -55,4 +56,9 @@ public class PlayerController : AbstractEntityController
         }
     }
 
+    public override string DoAIAction(AbstractEntityController player)
+    {
+        //player should never be controlled by the AI
+        throw new System.NotImplementedException();
+    }
 }

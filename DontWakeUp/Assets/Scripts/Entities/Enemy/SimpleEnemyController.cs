@@ -23,14 +23,17 @@ public class SimpleEnemyController : AbstractEntityController
     private void InnitialiseProperties()
     {
         float hp = 10f;
+        
         float movement_speed = 4f;
-        float attack_physical = 5f;
-        float attack_emotional = 5f;
+        float combat_speed = 3f;
 
-        float armour_physical = 1f;
-        float armour_emotional = 1f;
+        float attack_physical = 3f;
+        float attack_emotional = 0f;
 
-        InnitialiseProperties(hp, movement_speed, attack_physical, attack_emotional, armour_physical, armour_emotional);
+        float armour_physical = 0f;
+        float armour_emotional = 0f;
+
+        InnitialiseProperties(hp, movement_speed, combat_speed, attack_physical, attack_emotional, armour_physical, armour_emotional);
     }
 
     private void InnitialiseMovement()
@@ -93,7 +96,10 @@ public class SimpleEnemyController : AbstractEntityController
         Debug.DrawRay(transform.position, transform.TransformDirection(new Vector2(1f, -1f)).normalized * detectionRadious, Color.red);
     }
 
-
-
+    public override string DoAIAction(AbstractEntityController player)
+    {
+        player.TakeDamage(attack_physical, true);
+        return $"{gameObject.name} just physically hit you!";
+    }
 
 }
