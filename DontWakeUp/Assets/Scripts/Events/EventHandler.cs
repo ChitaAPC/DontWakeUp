@@ -100,6 +100,20 @@ public class EventHandler
         }
     }
 
+    private BattleEndEvent _battleEndEvent = null;
+    public BattleEndEvent BattleEndEvent
+    {
+        get
+        {
+            if (_battleEndEvent == null)
+            {
+                _battleEndEvent = new BattleEndEvent();
+            }
+            return _battleEndEvent;
+        }
+    }
+
+
     //add your events below this line
 
 
