@@ -22,18 +22,20 @@ public class SimpleEnemyController : AbstractEntityController
 
     private void InnitialiseProperties()
     {
-        float hp = 10f;
-        
-        float movement_speed = 4f;
-        float combat_speed = 3f;
+        EntityStats stats = new EntityStats();
+        stats.maxHp = 10f;
+        stats.movement_speed = 4f;
+        stats.combat_speed = 3f;
+        stats.attack_physical = 3f;
+        stats.attack_emotional = 0f;
+        stats.armour_physical = 0f;
+        stats.armour_emotional = 0f;
 
-        float attack_physical = 3f;
-        float attack_emotional = 0f;
+        EntityStats buffs = new EntityStats();
+        buffs.armour_physical = -0.1f;
+        buffs.hp = 5f;
 
-        float armour_physical = 0f;
-        float armour_emotional = 0f;
-
-        InnitialiseProperties(hp, movement_speed, combat_speed, attack_physical, attack_emotional, armour_physical, armour_emotional);
+        InnitialiseProperties(stats, buffs);
     }
 
     private void InnitialiseMovement()

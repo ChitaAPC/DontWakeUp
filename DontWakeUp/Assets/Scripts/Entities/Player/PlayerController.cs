@@ -15,16 +15,17 @@ public class PlayerController : AbstractEntityController
 
     private void InnitialiseProperties()
     {
-        float hp = 10f;
-        float movement_speed = 5f;
-        float combat_speed = 5f;
-        float attack_physical = 5f;
-        float attack_emotional = 5f;
+        EntityStats stats = new EntityStats();
+        stats.maxHp = 10f;
+        stats.movement_speed = 5f;
+        stats.combat_speed = 5f;
+        stats.attack_physical = 5f;
+        stats.attack_emotional = 5f;
 
-        float armour_physical = 0f;
-        float armour_emotional = 0f;
-
-        InnitialiseProperties(hp, movement_speed, combat_speed, attack_physical, attack_emotional, armour_physical, armour_emotional);
+        stats.armour_physical = 0f;
+        stats.armour_emotional = 0f;
+        
+        InnitialiseProperties(stats, new EntityStats());
     }
 
     private void InnitialiseMovmeent()

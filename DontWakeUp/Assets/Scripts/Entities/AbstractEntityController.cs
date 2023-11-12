@@ -6,6 +6,21 @@ using UnityEngine;
 public abstract class AbstractEntityController : MonoBehaviour
 {
 
+    public struct EntityStats
+    {
+        public float hp;
+        public float maxHp;
+
+        public float movement_speed;
+        public float combat_speed;
+
+        public float attack_physical;
+        public float attack_emotional;
+
+        public float armour_physical;
+        public float armour_emotional;
+    }
+
 
     public float hp { private set; get; }
     public float maxHp { private set; get; }
@@ -18,6 +33,8 @@ public abstract class AbstractEntityController : MonoBehaviour
 
     public float armour_physical { private set; get; }
     public float armour_emotional { private set; get; }
+
+    public EntityStats buffs { private set; get; }
 
     
     private Rigidbody2D rb;
@@ -36,18 +53,17 @@ public abstract class AbstractEntityController : MonoBehaviour
 
     protected abstract void OnAwake();
 
-    protected void InnitialiseProperties(float maxHp, float movement_speed, float combat_speed,
-        float attack_physical, float attack_emotional,
-        float armour_physical, float armour_emotional)
+    protected void InnitialiseProperties(EntityStats stats, EntityStats buffs)
     {
-        hp = maxHp;
-        this.maxHp = maxHp;
-        this.movement_speed = movement_speed;
-        this.combat_speed = combat_speed;
-        this.attack_physical = attack_physical;
-        this.attack_emotional = attack_emotional;
-        this.armour_physical = armour_physical;
-        this.armour_emotional = armour_emotional;
+        hp = stats.maxHp;
+        maxHp = stats.maxHp;
+        movement_speed = stats.movement_speed;
+        combat_speed = stats.combat_speed;
+        attack_physical = stats.attack_physical;
+        attack_emotional = stats.attack_emotional;
+        armour_physical = stats.armour_physical;
+        armour_emotional = stats.armour_emotional;
+        this.buffs = buffs;
 
         rb.gravityScale = 0f;
         innitialised = true;
@@ -178,5 +194,22 @@ public abstract class AbstractEntityController : MonoBehaviour
     /// <param name="player">The player controller script to be used</param>
     /// <returns>a text description of the action taken</returns>
     public abstract string DoAIAction(AbstractEntityController player);
+
+
+    /// <summary>
+    /// Applies the specified buffs into the entity in a value safe manner
+    /// </summary>
+    /// <param name="buffs">the buffs to be applied as addatives</param>
+    public void ApplyBuffsModifiers(EntityStats buffs)
+    {
+        maxHp += buffs.maxHp;
+        hp = Mathf.Min(maxHp, hp + buffs.hp);
+        movement_speed += buffs.movement_speed;
+        combat_speed += buffs.combat_speed;
+        attack_physical += buffs.attack_physical;
+        attack_emotional += buffs.attack_emotional;
+        armour_physical = Mathf.Max(0f, armour_physical + buffs.armour_physical);
+        armour_emotional = Mathf.Max(0f, armour_emotional + buffs.armour_emotional);
+    }
 
 }

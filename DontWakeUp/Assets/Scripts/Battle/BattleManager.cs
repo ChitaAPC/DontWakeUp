@@ -19,6 +19,12 @@ public class BattleManager : MonoBehaviour
     [SerializeField]
     private Button nextButton;
 
+    [SerializeField]
+    private Slider enemyHealthBar;
+    [SerializeField]
+    private Slider playerHealthBar;
+
+
     private bool waitingForPlayerTurn;
 
     private string battleString;
@@ -43,6 +49,12 @@ public class BattleManager : MonoBehaviour
         battleString = $"Do battle with {enemy.gameObject.name}";
         waitingForNextDesc = false;
         nextButton.interactable = false;
+
+        enemyHealthBar.maxValue = enemy.maxHp;
+        enemyHealthBar.value = enemy.hp;
+        playerHealthBar.maxValue = player.maxHp;
+        playerHealthBar.value = player.hp;
+
         StartCoroutine(BattleCo(player, enemy));
     }
 
@@ -93,6 +105,29 @@ public class BattleManager : MonoBehaviour
     private void HandleEndOfCombat(AbstractEntityController player, AbstractEntityController enemy)
     {
         //todo!
+        if (player.hp > 0)
+        {
+            OnPlayerLivesEndOfCombat(player, enemy);
+        }
+        else
+        {
+            //todo: load into game over scene
+        }
+    }
+
+    private void OnPlayerLivesEndOfCombat(AbstractEntityController player, AbstractEntityController enemy)
+    {
+        if (enemy.hp <= 0f)
+        {
+            player.ApplyBuffsModifiers(enemy.buffs);
+            Destroy(enemy.gameObject);
+            BattleUiCanvas.SetActive(false);
+            Time.timeScale = 1f;
+        }
+        else
+        {
+            //todo? are we making it possible for a fight to ent without killing the enemy?
+        }
     }
 
     private void DoFirstAction(AbstractEntityController player, AbstractEntityController enemy)
@@ -105,6 +140,10 @@ public class BattleManager : MonoBehaviour
         {
             battleString = HandlePlayerMove(player, enemy);
         }
+
+        enemyHealthBar.value = enemy.hp;
+        playerHealthBar.value = player.hp;
+
         DisplayBattleText();
         SetWaitingForNextBtn();
 
@@ -120,6 +159,10 @@ public class BattleManager : MonoBehaviour
         {
             battleString = HandlePlayerMove(player, enemy);
         }
+
+        enemyHealthBar.value = enemy.hp;
+        playerHealthBar.value = player.hp;
+
         DisplayBattleText();
         SetWaitingForNextBtn();
     }
