@@ -39,6 +39,7 @@ public abstract class AbstractEntityController : MonoBehaviour
     
     private Rigidbody2D rb;
 
+    protected Animator animator;
 
     private bool innitialised;
 
@@ -46,6 +47,7 @@ public abstract class AbstractEntityController : MonoBehaviour
     {
         innitialised = false;
         rb = GetComponent<Rigidbody2D>();
+        animator = GetComponentInChildren<Animator>();
 
         OnAwake();
         Debug.Assert(innitialised, "ERROR: you must call \"InnitialiseProperties\" during OnAwake to initialise all of the values for this entity");
@@ -210,6 +212,11 @@ public abstract class AbstractEntityController : MonoBehaviour
         attack_emotional += buffs.attack_emotional;
         armour_physical = Mathf.Max(0f, armour_physical + buffs.armour_physical);
         armour_emotional = Mathf.Max(0f, armour_emotional + buffs.armour_emotional);
+    }
+
+    public Animator GetAnimator()
+    {
+        return animator;
     }
 
 }

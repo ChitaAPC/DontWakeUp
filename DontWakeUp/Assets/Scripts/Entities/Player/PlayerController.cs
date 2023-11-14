@@ -5,17 +5,11 @@ using UnityEngine;
 public class PlayerController : AbstractEntityController
 {
     private Vector2 dir;
-    private Animator animator;
 
     protected override void OnAwake()
     {
         InnitialiseMovmeent();
         InnitialiseProperties();
-    }
-
-    private void Start()
-    {
-        animator = GetComponentInChildren<Animator>();
     }
 
     private void InnitialiseProperties()
