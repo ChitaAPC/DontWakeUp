@@ -25,6 +25,15 @@ public class BattleManager : MonoBehaviour
     private Slider playerHealthBar;
 
 
+    [SerializeField]
+    private Image playerImage;
+    [SerializeField]
+    private Image enemyImage;
+
+    private SpriteRenderer playerRenderer;
+    private SpriteRenderer enemyRenderer;
+
+
     private bool waitingForPlayerTurn;
 
     private string battleString;
@@ -55,6 +64,9 @@ public class BattleManager : MonoBehaviour
         playerHealthBar.maxValue = player.maxHp;
         playerHealthBar.value = player.hp;
 
+        playerRenderer = player.gameObject.GetComponentInChildren<SpriteRenderer>();
+        enemyRenderer = enemy.gameObject.GetComponentInChildren<SpriteRenderer>();
+
         StartCoroutine(BattleCo(player, enemy));
     }
 
@@ -71,35 +83,47 @@ public class BattleManager : MonoBehaviour
     {
         while (player.hp > 0 && enemy.hp > 0)
         {
+            playerImage.sprite = playerRenderer.sprite;
+
             DisplayBattleText();
             EnablePlayerTurn();
-            while (waitingForPlayerTurn)
-            {
-                yield return null;
-            }
+
+            yield return WaitForPlayerAction();
+
             DoFirstAction(player, enemy);
-            while (waitingForNextDesc)
-            {
-                yield return null;
-            }
+            yield return WaitForNextDesc();
             if (player.hp > 0 && enemy.hp > 0)
             {
                 //only do second action if both are still alive
                 DoSecondAction(player, enemy);
-                while (waitingForNextDesc)
-                {
-                    yield return null;
-                }
+                yield return WaitForNextDesc();
             }
             HandleEndOfTurnString(player, enemy);
         }
         DisplayBattleText();
         SetWaitingForNextBtn();
-        while (waitingForNextDesc)
+        yield return WaitForNextDesc();
+        HandleEndOfCombat(player, enemy);
+    }
+
+    private IEnumerator WaitForPlayerAction()
+    {
+        while (waitingForPlayerTurn)
         {
+            playerImage.sprite = playerRenderer.sprite;
+            enemyImage.sprite = enemyRenderer.sprite;
             yield return null;
         }
-        HandleEndOfCombat(player, enemy);
+    }
+
+    private IEnumerator WaitForNextDesc()
+    {
+        while (waitingForNextDesc)
+        {
+            playerImage.sprite = playerRenderer.sprite;
+            enemyImage.sprite = enemyRenderer.sprite;
+            yield return null;
+        }
     }
 
     private void HandleEndOfCombat(AbstractEntityController player, AbstractEntityController enemy)
