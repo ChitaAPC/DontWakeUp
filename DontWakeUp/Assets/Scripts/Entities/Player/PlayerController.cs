@@ -4,13 +4,18 @@ using UnityEngine;
 
 public class PlayerController : AbstractEntityController
 {
-    private float moveDirX;
-    private float moveDirY;
+    private Vector2 dir;
+    private Animator animator;
 
     protected override void OnAwake()
     {
         InnitialiseMovmeent();
         InnitialiseProperties();
+    }
+
+    private void Start()
+    {
+        animator = GetComponentInChildren<Animator>();
     }
 
     private void InnitialiseProperties()
@@ -30,20 +35,22 @@ public class PlayerController : AbstractEntityController
 
     private void InnitialiseMovmeent()
     {
-        moveDirX = 0f;
-        moveDirY = 0f;
+        dir = new Vector2(0f, 0f);
     }
 
     private void Update()
     {
-        moveDirX = Input.GetAxisRaw("Horizontal");
-        moveDirY = Input.GetAxisRaw("Vertical");
+        float moveDirX = Input.GetAxisRaw("Horizontal");
+        float moveDirY = Input.GetAxisRaw("Vertical");
+        dir = new Vector2(moveDirX, moveDirY);
+        animator.SetFloat("Horizontal", moveDirX);
+        animator.SetFloat("Vertical", moveDirY);
+        animator.SetFloat("Speed", dir.sqrMagnitude);
     }
 
     private void FixedUpdate()
     {
-        MoveEntityOnDirection(new Vector2(moveDirX, moveDirY));
-        
+        MoveEntityOnDirection(dir);
     }
 
 
