@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DarkSlimeController : AbstractEntityController
+public class LightSlimeController : AbstractEntityController
 {
 
     private Vector2 dir;
@@ -25,14 +25,14 @@ public class DarkSlimeController : AbstractEntityController
         stats.maxHp = 10f;
         stats.movement_speed = 4f;
         stats.combat_speed = 3f;
-        stats.attack_physical = 3f;
-        stats.attack_emotional = 0f;
+        stats.attack_physical = 0f;
+        stats.attack_emotional = 3f;
         stats.armour_physical = 0f;
         stats.armour_emotional = 0f;
 
         EntityStats buffs = new EntityStats();
-        buffs.armour_physical = -0.1f;
-        buffs.attack_emotional = 0.1f;
+        buffs.armour_emotional = -0.1f;
+        buffs.attack_physical = 0.1f;
 
         InnitialiseProperties(stats, buffs);
     }
@@ -40,7 +40,7 @@ public class DarkSlimeController : AbstractEntityController
     private void InnitialiseMovement()
     {
         layerMask = 1 << LayerMask.NameToLayer("Player");
-        detectionRadious = 3.5f;
+        detectionRadious = 4f;
 
         UpdateIddleValues();
     }
@@ -48,7 +48,7 @@ public class DarkSlimeController : AbstractEntityController
     private void UpdateIddleValues()
     {
         idleDirChangeTimer = Random.Range(0.5f, 5f);
-        if (Random.value > 0.3f)
+        if (Random.value > 0.7f)
         {
             dir = new Vector2(Random.Range(-0.5f, 0.5f), Random.Range(-0.5f, 0.5f));
         }
@@ -99,7 +99,7 @@ public class DarkSlimeController : AbstractEntityController
 
     public override string DoAIAction(AbstractEntityController player)
     {
-        player.TakeDamage(attack_physical, true);
-        return $"{gameObject.name} just physically hit you!";
+        player.TakeDamage(attack_emotional, false);
+        return $"{gameObject.name} just hurt your feelings";
     }
 }
