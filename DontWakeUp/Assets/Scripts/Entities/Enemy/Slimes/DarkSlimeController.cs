@@ -58,6 +58,13 @@ public class DarkSlimeController : AbstractEntityController
         }
     }
 
+    private void Update()
+    {
+        animator.SetFloat("Horizontal", dir.x * Time.timeScale);
+        animator.SetFloat("Vertical", dir.y * Time.timeScale);
+        animator.SetFloat("Speed", dir.sqrMagnitude * Time.timeScale);
+    }
+
     private void FixedUpdate()
     {
         HandleMovementMode();
@@ -66,9 +73,6 @@ public class DarkSlimeController : AbstractEntityController
     private void HandleMovementMode()
     {
         Collider2D player = Physics2D.OverlapCircle(transform.position, detectionRadious, layerMask);
-        animator.SetFloat("Horizontal", dir.x);
-        animator.SetFloat("Vertical", dir.y);
-        animator.SetFloat("Speed", dir.sqrMagnitude);
         if (player == null)
         {
             animator.SetBool("Angry", false);

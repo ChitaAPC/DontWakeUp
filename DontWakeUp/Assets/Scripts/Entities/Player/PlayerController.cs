@@ -37,9 +37,9 @@ public class PlayerController : AbstractEntityController
         float moveDirX = Input.GetAxisRaw("Horizontal");
         float moveDirY = Input.GetAxisRaw("Vertical");
         dir = new Vector2(moveDirX, moveDirY);
-        animator.SetFloat("Horizontal", moveDirX);
-        animator.SetFloat("Vertical", moveDirY);
-        animator.SetFloat("Speed", dir.sqrMagnitude);
+        animator.SetFloat("Horizontal", dir.x);
+        animator.SetFloat("Vertical", dir.y);
+        animator.SetFloat("Speed", dir.sqrMagnitude * Time.timeScale);
     }
 
     private void FixedUpdate()
