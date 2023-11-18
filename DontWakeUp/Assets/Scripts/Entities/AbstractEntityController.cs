@@ -101,6 +101,15 @@ public abstract class AbstractEntityController : MonoBehaviour
             damageToTake = Mathf.Max(0f, dmg - armour_emotional);
         }
         hp = Mathf.Max(0f, hp - damageToTake);
+        if (hp > 0f)
+        {
+            animator.SetTrigger("Hurt");
+        }
+        else
+        {
+            animator.SetTrigger("Dead");
+        }
+
         return hp <= 0f;
     }
 

@@ -65,8 +65,8 @@ public class LightSlimeController : AbstractEntityController
 
     private void Update()
     {
-        animator.SetFloat("Horizontal", dir.x);
-        animator.SetFloat("Vertical", dir.y);
+        animator.SetFloat("Horizontal", dir.x * Time.timeScale);
+        animator.SetFloat("Vertical", dir.y * Time.timeScale);
         animator.SetFloat("Speed", dir.sqrMagnitude * Time.timeScale);
     }
 

@@ -111,7 +111,10 @@ public class BattleManager : MonoBehaviour
         while (waitingForPlayerTurn)
         {
             playerImage.sprite = playerRenderer.sprite;
+            playerImage.color = playerRenderer.color;
             enemyImage.sprite = enemyRenderer.sprite;
+            enemyImage.color = enemyRenderer.color;
+
             yield return null;
         }
     }
@@ -121,7 +124,10 @@ public class BattleManager : MonoBehaviour
         while (waitingForNextDesc)
         {
             playerImage.sprite = playerRenderer.sprite;
+            playerImage.color = playerRenderer.color;
             enemyImage.sprite = enemyRenderer.sprite;
+            enemyImage.color = enemyRenderer.color;
+            
             yield return null;
         }
     }
