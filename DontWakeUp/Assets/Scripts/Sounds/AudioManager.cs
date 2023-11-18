@@ -81,6 +81,33 @@ public class AudioManager : MonoBehaviour
     }
 
 
+    public void FadeSongSynced(string name)
+    {
+        Sound songToPlay = GetSongByName(name);
+        Sound playingSong = GetPlayingSong();
+
+        if (playingSong != null)
+        {
+            songToPlay.source.time = playingSong.source.time;
+            StartCoroutine(FadeOutSong(playingSong, 0.2f));
+        }
+        songToPlay.source.Play();
+    }
+
+    private IEnumerator FadeOutSong(Sound playingSong, float fadeDiration)
+    {
+        float t = 0;
+        float wantedVol = playingSong.source.volume;
+        while (t < fadeDiration)
+        {
+            t += Time.fixedUnscaledDeltaTime;
+            playingSong.source.volume -= 0.1f;
+            yield return null;
+        }
+        playingSong.source.Stop();
+        playingSong.source.volume = wantedVol;
+    }
+
 
     //temp?
     public void PausePlayingSong()
