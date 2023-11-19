@@ -2,9 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DarkMushroomController : AbstractEntityController
+public class LightMushroomController : AbstractEntityController
 {
-    
     private Vector2 dir;
     private float idleDirChangeTimer;
 
@@ -25,14 +24,14 @@ public class DarkMushroomController : AbstractEntityController
         stats.maxHp = 6f;
         stats.movement_speed = 2f;
         stats.combat_speed = 6f;
-        stats.attack_physical = 3f;
-        stats.attack_emotional = 0f;
-        stats.armour_physical = 3f;
-        stats.armour_emotional = 0f;
+        stats.attack_physical = 0f;
+        stats.attack_emotional = 3f;
+        stats.armour_physical = 0f;
+        stats.armour_emotional = 3f;
 
         EntityStats buffs = new EntityStats();
         buffs.movement_speed = -0.05f;
-        buffs.armour_physical = 0.1f;
+        buffs.armour_emotional = 0.1f;
 
         InnitialiseProperties(stats, buffs);
     }
@@ -48,9 +47,9 @@ public class DarkMushroomController : AbstractEntityController
     private void UpdateIddleValues()
     {
         idleDirChangeTimer = Random.Range(0.5f, 1f);
-        if (Random.value < 0.15f)
+        if (Random.value > 0.15f)
         {
-            
+
             dir = new Vector2(Random.Range(-0.5f, 0.5f), Random.Range(-0.5f, 0.5f));
         }
         else
@@ -102,21 +101,21 @@ public class DarkMushroomController : AbstractEntityController
 
     public override string DoAIAction(AbstractEntityController player)
     {
-        if (is_def_physical)
+        if (is_def_emotional)
         {
-            is_def_physical = false;
+            is_def_emotional = false;
         }
 
         if (Random.value < 0.5f)
         {
             //defend
-            is_def_physical = true;
-            return $"{gameObject.name} just took a defencive stance, it looks harder to hit...";
+            is_def_emotional = true;
+            return $"{gameObject.name} takes a deep breath and smiles. It looks more confident in itself...";
         }
         else
         {
-            player.TakeDamage(attack_physical, true);
-            return $"{gameObject.name} just physically hit you!";
+            player.TakeDamage(attack_emotional, false);
+            return $"{gameObject.name} was mean to you!";
         }
     }
 }
