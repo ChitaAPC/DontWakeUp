@@ -43,15 +43,31 @@ public class BattleManager : MonoBehaviour
 
     private bool waitingForNextDesc;
 
+    private Stack<AbstractEntityController> nextBattles;
+    private bool isBattleRunning;
+
+    Object _lock;
 
     private void Start()
     {
         EventHandler.instance.BattleStartEvent.AddListener(OnBattleStart);
-        
+        nextBattles = new Stack<AbstractEntityController>();
+        isBattleRunning = false;
+        _lock = new Object();
     }
 
     private void OnBattleStart(AbstractEntityController player, AbstractEntityController enemy)
     {
+        lock (_lock)
+        {
+            if (isBattleRunning)
+            {
+                nextBattles.Push(enemy);
+                return;
+            }
+            isBattleRunning = true;
+        }
+
         Time.timeScale = 0f;
         BattleUiCanvas.SetActive(true);
         DisablePlayerTurn();
@@ -69,15 +85,6 @@ public class BattleManager : MonoBehaviour
 
         StartCoroutine(BattleCo(player, enemy));
     }
-
-    //display text
-    //wait for player action
-    //decide action order
-    //do first action
-    //display text for first action
-    //do second action
-    //display text for second action
-
 
     private IEnumerator BattleCo(AbstractEntityController player, AbstractEntityController enemy)
     {
@@ -134,6 +141,8 @@ public class BattleManager : MonoBehaviour
 
     private void HandleEndOfCombat(AbstractEntityController player, AbstractEntityController enemy)
     {
+        isBattleRunning = false;
+
         //todo!
         if (player.hp > 0)
         {
@@ -158,6 +167,11 @@ public class BattleManager : MonoBehaviour
         else
         {
             //todo? are we making it possible for a fight to ent without killing the enemy?
+        }
+        
+        if (nextBattles.Count > 0)
+        {
+            OnBattleStart(player, nextBattles.Pop());
         }
     }
 
