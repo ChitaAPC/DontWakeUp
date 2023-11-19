@@ -273,17 +273,41 @@ public class BattleManager : MonoBehaviour
     {
         string description = "";
 
+        player.SetDefenceMode(false, true);
+        player.SetDefenceMode(false, false);
+
         if (wantsAttack)
         {
             if (wantsPhysical)
             {
                 enemy.TakeDamage(player.attack_physical, true);
                 description = $"You just attacked {enemy.gameObject.name} for {Mathf.RoundToInt(player.attack_physical)} damage";
+                if (enemy.is_def_physical)
+                {
+                    description += ", but it is defending";
+                }
             }
             else
             {
                 enemy.TakeDamage(player.attack_emotional, false);
                 description = $"You just insulted {enemy.gameObject.name} for {Mathf.RoundToInt(player.attack_emotional)} damage";
+                if (enemy.is_def_emotional)
+                {
+                    description += ", but it is defending";
+                }
+            }
+        }
+        else
+        {
+            player.SetDefenceMode(true, wantsPhysical);
+
+            if (wantsPhysical)
+            {
+                description = $"You assume a defencive stance to block {Mathf.RoundToInt(player.armour_physical * 2)} physical damage";
+            }
+            else
+            {
+                description = $"You think of your happy place, which lets you block {Mathf.RoundToInt(player.armour_physical * 2)} emotional damage";
             }
         }
 

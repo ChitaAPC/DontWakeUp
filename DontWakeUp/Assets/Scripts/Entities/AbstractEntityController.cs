@@ -43,9 +43,14 @@ public abstract class AbstractEntityController : MonoBehaviour
 
     private bool innitialised;
 
+    public bool is_def_physical { protected set; get; }
+    public bool is_def_emotional { protected set; get; }
+
     private void Awake()
     {
         innitialised = false;
+        is_def_physical = false;
+        is_def_emotional = false;
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponentInChildren<Animator>();
 
@@ -94,16 +99,37 @@ public abstract class AbstractEntityController : MonoBehaviour
         float damageToTake;
         if (isPhysical)
         {
-            damageToTake = Mathf.Max(0f, dmg - armour_physical);
+            if (is_def_physical)
+            {
+                damageToTake = dmg - (2 * armour_physical); //overarmour can heal
+            }
+            else
+            {
+                damageToTake = Mathf.Max(0f, dmg - armour_physical);
+            }
         }
         else 
         {
-            damageToTake = Mathf.Max(0f, dmg - armour_emotional);
+            if (is_def_emotional)
+            {
+                damageToTake = dmg - (2 * armour_emotional); //overarmour can heal
+            }
+            else
+            {
+                damageToTake = Mathf.Max(0f, dmg - armour_emotional);
+            }
         }
-        hp = Mathf.Max(0f, hp - damageToTake);
+        hp = Mathf.Min(Mathf.Max(0f, hp - damageToTake), maxHp);
         if (hp > 0f)
         {
-            animator.SetTrigger("Hurt");
+            if (damageToTake > 0)
+            {
+                animator.SetTrigger("Hurt");
+            }
+            else
+            {
+                //todo heal animation?
+            }
         }
         else
         {
@@ -226,6 +252,18 @@ public abstract class AbstractEntityController : MonoBehaviour
     public Animator GetAnimator()
     {
         return animator;
+    }
+
+    public void SetDefenceMode(bool mode, bool physical)
+    {
+        if (physical)
+        {
+            is_def_physical = mode;
+        }
+        else
+        {
+            is_def_emotional = mode;
+        }
     }
 
 }

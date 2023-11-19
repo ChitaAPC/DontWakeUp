@@ -21,8 +21,8 @@ public class PlayerController : AbstractEntityController
         stats.attack_physical = 5f;
         stats.attack_emotional = 5f;
 
-        stats.armour_physical = 0f;
-        stats.armour_emotional = 0f;
+        stats.armour_physical = 0.5f;
+        stats.armour_emotional = 0.5f;
         
         InnitialiseProperties(stats, new EntityStats());
     }
