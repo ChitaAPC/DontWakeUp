@@ -11,14 +11,14 @@ public abstract class AbstractEntityController : MonoBehaviour
         public float hp;
         public float maxHp;
 
-        public float movement_speed;
-        public float combat_speed;
+        public float movement_speed;    //debuff
+        public float combat_speed;      //debuff
 
-        public float attack_physical;
-        public float attack_emotional;
+        public float attack_physical;   //buff
+        public float attack_emotional;  //buff
 
-        public float armour_physical;
-        public float armour_emotional;
+        public float armour_physical;   //buff debuff
+        public float armour_emotional;  //buff debuff
     }
 
 
