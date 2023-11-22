@@ -147,7 +147,10 @@ public class BattleManager : MonoBehaviour
         if (player.hp > 0)
         {
             OnPlayerLivesEndOfCombat(player, enemy);
-            EventHandler.instance.BattleEndEvent.Invoke(player, enemy);
+            if (nextBattles.Count == 0)
+            {
+                EventHandler.instance.BattleEndEvent.Invoke(player, enemy);
+            }
         }
         else
         {
