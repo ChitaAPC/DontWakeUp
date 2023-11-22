@@ -88,7 +88,12 @@ public class BattleManager : MonoBehaviour
 
         if (enemy.tag == "Boss")
         {
-            enemyImage.transform.localScale = new Vector3(2f, 1f, 1f);
+            enemyHealthBar.transform.parent.SetSiblingIndex(1);
+            enemyImage.transform.localScale = new Vector3(1.5f, 1.5f, 1f);
+            battleTextDisplay.transform.parent.GetComponent<Animator>().SetTrigger("BossChomp");
+            enemy.GetAnimator().SetTrigger("Chomp");
+            enemyImage.GetComponent<Animator>().SetTrigger("Chomp");
+            battleTextDisplay.alignment = TextAlignmentOptions.Center;
         }
         else
         {
