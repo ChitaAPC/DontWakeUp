@@ -9,6 +9,8 @@ public class BattleManager : MonoBehaviour
 
     [SerializeField]
     private GameObject BattleUiCanvas;
+    [SerializeField]
+    private GameObject OverworldUiCanvas;
 
     [SerializeField]
     private TextMeshProUGUI battleTextDisplay;
@@ -70,6 +72,7 @@ public class BattleManager : MonoBehaviour
 
         Time.timeScale = 0f;
         BattleUiCanvas.SetActive(true);
+        OverworldUiCanvas.SetActive(false);
         DisablePlayerTurn();
         battleString = $"Do battle with {enemy.gameObject.name}";
         waitingForNextDesc = false;
@@ -82,6 +85,15 @@ public class BattleManager : MonoBehaviour
 
         playerRenderer = player.gameObject.GetComponentInChildren<SpriteRenderer>();
         enemyRenderer = enemy.gameObject.GetComponentInChildren<SpriteRenderer>();
+
+        if (enemy.tag == "Boss")
+        {
+            enemyImage.transform.localScale = new Vector3(2f, 1f, 1f);
+        }
+        else
+        {
+            enemyImage.transform.localScale = new Vector3(1f, 1f, 1f);
+        }
 
         StartCoroutine(BattleCo(player, enemy));
     }
@@ -165,6 +177,7 @@ public class BattleManager : MonoBehaviour
             player.ApplyBuffsModifiers(enemy.buffs);
             Destroy(enemy.gameObject);
             BattleUiCanvas.SetActive(false);
+            OverworldUiCanvas.SetActive(true);
             Time.timeScale = 1f;
         }
         else
