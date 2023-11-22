@@ -56,6 +56,16 @@ public class AudioManager : MonoBehaviour
         GetSongByName(name).source.Play();
     }
 
+    public void PlaySongWithDelay(string name, float delay)
+    {
+        GetSongByName(name).source.PlayDelayed(delay);
+    }
+
+    public float GetSongLength(string name)
+    {
+        return GetSongByName(name).source.clip.length;
+    }
+
     public void PlaySFX(string name)
     {
         //todo
