@@ -6,6 +6,9 @@ using UnityEngine;
 public abstract class AbstractEntityController : MonoBehaviour
 {
 
+    private int winCount = 0;
+    private int winsToHeal = 3;
+
     public struct EntityStats
     {
         public float hp;
@@ -249,6 +252,13 @@ public abstract class AbstractEntityController : MonoBehaviour
         armour_emotional = Mathf.Max(0f, armour_emotional + buffs.armour_emotional);
 
         EventHandler.instance.BuffAppliedEvent.Invoke(buffs);
+        winCount++;
+
+        if (winCount >= winsToHeal)
+        {
+            winCount = 0;
+            hp = maxHp;
+        }
     }
 
     public Animator GetAnimator()
