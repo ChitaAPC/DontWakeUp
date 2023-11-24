@@ -17,6 +17,14 @@ public class ScaleManager : MonoBehaviour
     [SerializeField] private GameObject buffPrefab;
     [SerializeField] private GameObject debuffPrefab;
 
+    [SerializeField] Color MaxHpColour;
+    [SerializeField] Color MovementSpeedColour;
+    [SerializeField] Color CombatSpeedColour;
+    [SerializeField] Color PhysicalAttackColour;
+    [SerializeField] Color EmotionalAttackColour;
+    [SerializeField] Color PhysicalDefenceColour;
+    [SerializeField] Color EmotionalDefenceColour;
+
     private void Awake()
     {
         scaleCounts.Add(0);
@@ -28,21 +36,92 @@ public class ScaleManager : MonoBehaviour
 
         //todo figureout which buff it is
         GameObject buff = Instantiate(buffPrefab,transform);
-        Image buffImage = buff.GetComponent<Image>();
-        buffImage.color = new Color(Random.value, Random.value, Random.value);
+        buff.GetComponent<Image>().color = GetBuffColour(modifier);
+        buff.GetComponent<ScaleController>().SetTooltipText(GetBuffTooltipText(modifier));
         PlaceScale(buff);
 
         //todo figure out what debuff it is
         GameObject debuff = Instantiate(debuffPrefab, transform);
-        Image debuffImage = debuff.GetComponent<Image>();
-        debuffImage.color = new Color(Random.value, Random.value, Random.value);
+        debuff.GetComponent<Image>().color = GetDebuffColour(modifier);
+        debuff.GetComponent<ScaleController>().SetTooltipText(GetDebuffTooltipText(modifier));
         PlaceScale(debuff);
     }
 
-    //private Color GetBuffColour(EntityStats modifier)
-    //{
+    private string GetBuffTooltipText(EntityStats modifier)
+    {
+        if (modifier.maxHp > 0)
+            return "Buff\nMax HP";
+        if (modifier.movement_speed > 0)
+            return "Buff\nMovement Speed";
+        if (modifier.combat_speed > 0)
+            return "Buff\nCombat Speed";
+        if (modifier.attack_physical > 0)
+            return "Buff\nPhysical Attack";
+        if (modifier.attack_emotional > 0)
+            return "Buff\nEmotional Attack";
+        if (modifier.armour_physical > 0)
+            return "Buff\nPhysical Armour";
+        if (modifier.armour_emotional > 0)
+            return "Buff\nEmotional Armour";
+        return "Buff";
+    }
 
-    //}
+    private string GetDebuffTooltipText(EntityStats modifier)
+    {
+        if (modifier.maxHp < 0)
+            return "Debuff\nMax HP";
+        if (modifier.movement_speed < 0)
+            return "Debuff\nMovement Speed";
+        if (modifier.combat_speed < 0)
+            return "Debuff\nCombat Speed";
+        if (modifier.attack_physical < 0)
+            return "Debuff\nPhysical Attack";
+        if (modifier.attack_emotional < 0)
+            return "Debuff\nEmotional Attack";
+        if (modifier.armour_physical < 0)
+            return "Debuff\nPhysical Armour";
+        if (modifier.armour_emotional < 0)
+            return "Debuff\nEmotional Armour";
+        return "Debuff";
+    }
+
+    private Color GetBuffColour(EntityStats modifier)
+    {
+        if (modifier.maxHp > 0)
+            return MaxHpColour;
+        if (modifier.movement_speed > 0)
+            return MovementSpeedColour;
+        if (modifier.combat_speed > 0)
+            return CombatSpeedColour;
+        if (modifier.attack_physical > 0)
+            return PhysicalAttackColour;
+        if (modifier.attack_emotional > 0)
+            return EmotionalAttackColour;
+        if (modifier.armour_physical > 0)
+            return PhysicalDefenceColour;
+        if (modifier.armour_emotional > 0)
+            return EmotionalDefenceColour;
+        return Color.white;
+    }
+
+    private Color GetDebuffColour(EntityStats modifier)
+    {
+        if (modifier.maxHp < 0)
+            return MaxHpColour;
+        if (modifier.movement_speed < 0)
+            return MovementSpeedColour;
+        if (modifier.combat_speed < 0)
+            return CombatSpeedColour;
+        if (modifier.attack_physical < 0)
+            return PhysicalAttackColour;
+        if (modifier.attack_emotional < 0)
+            return EmotionalAttackColour;
+        if (modifier.armour_physical < 0)
+            return PhysicalDefenceColour;
+        if (modifier.armour_emotional < 0)
+            return EmotionalDefenceColour;
+        return Color.white;
+    }
 
     private void PlaceScale(GameObject scaleToPlace)
     {
