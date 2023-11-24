@@ -247,6 +247,8 @@ public abstract class AbstractEntityController : MonoBehaviour
         attack_emotional += buffs.attack_emotional;
         armour_physical = Mathf.Max(0f, armour_physical + buffs.armour_physical);
         armour_emotional = Mathf.Max(0f, armour_emotional + buffs.armour_emotional);
+
+        EventHandler.instance.BuffAppliedEvent.Invoke(buffs);
     }
 
     public Animator GetAnimator()

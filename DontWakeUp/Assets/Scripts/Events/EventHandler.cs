@@ -113,6 +113,18 @@ public class EventHandler
         }
     }
 
+    private BuffAppliedEvent _buffAppliedEvent = null;
+    public BuffAppliedEvent BuffAppliedEvent
+    {
+        get
+        {
+            if (_buffAppliedEvent == null)
+            {
+                _buffAppliedEvent= new BuffAppliedEvent();
+            }
+            return _buffAppliedEvent;
+        }
+    }
 
     //add your events below this line
 
