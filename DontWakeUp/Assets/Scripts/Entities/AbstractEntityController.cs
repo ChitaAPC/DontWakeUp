@@ -9,6 +9,9 @@ public abstract class AbstractEntityController : MonoBehaviour
     private int winCount = 0;
     private int winsToHeal = 3;
 
+    protected GameObject player = null;
+    protected float detectionRadious;
+
     public struct EntityStats
     {
         public float hp;
@@ -46,6 +49,10 @@ public abstract class AbstractEntityController : MonoBehaviour
 
     private bool innitialised;
 
+    //public int ID { private set;  get; }
+
+    //private static int ID_COUNT;
+
     public bool is_def_physical { protected set; get; }
     public bool is_def_emotional { protected set; get; }
 
@@ -59,6 +66,8 @@ public abstract class AbstractEntityController : MonoBehaviour
 
         OnAwake();
         Debug.Assert(innitialised, "ERROR: you must call \"InnitialiseProperties\" during OnAwake to initialise all of the values for this entity");
+        //ID = ID_COUNT;
+        //ID_COUNT++;
     }
 
     protected abstract void OnAwake();
@@ -278,4 +287,19 @@ public abstract class AbstractEntityController : MonoBehaviour
         }
     }
 
+
+    public void SetPlayerTarget(GameObject player)
+    {
+        this.player = player;
+    }
+
+    protected bool IsIdleMode()
+    {
+        if (player == null)
+        {
+            return true;
+        }
+
+        return Vector2.Distance(transform.position, player.transform.position) >= detectionRadious;
+    }
 }

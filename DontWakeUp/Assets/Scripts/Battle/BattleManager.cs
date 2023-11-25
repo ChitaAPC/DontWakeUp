@@ -35,6 +35,8 @@ public class BattleManager : MonoBehaviour
     private SpriteRenderer playerRenderer;
     private SpriteRenderer enemyRenderer;
 
+    [SerializeField]
+    private EnemySpawnHandler EnemyHandler;
 
     private bool waitingForPlayerTurn;
 
@@ -180,7 +182,7 @@ public class BattleManager : MonoBehaviour
         if (enemy.hp <= 0f)
         {
             player.ApplyBuffsModifiers(enemy.buffs);
-            Destroy(enemy.gameObject);
+            EnemyHandler.RemoveEnemy(enemy);
             BattleUiCanvas.SetActive(false);
             OverworldUiCanvas.SetActive(true);
             Time.timeScale = 1f;

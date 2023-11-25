@@ -8,10 +8,6 @@ public class DarkMushroomController : AbstractEntityController
     private Vector2 dir;
     private float idleDirChangeTimer;
 
-    private float detectionRadious;
-
-    private int layerMask;
-
     protected override void OnAwake()
     {
         InnitialiseProperties();
@@ -39,7 +35,6 @@ public class DarkMushroomController : AbstractEntityController
 
     private void InnitialiseMovement()
     {
-        layerMask = 1 << LayerMask.NameToLayer("Player");
         detectionRadious = 4.5f;
 
         UpdateIddleValues();
@@ -73,14 +68,13 @@ public class DarkMushroomController : AbstractEntityController
 
     private void HandleMovementMode()
     {
-        Collider2D player = Physics2D.OverlapCircle(transform.position, detectionRadious, layerMask);
-        if (player == null)
+        if (IsIdleMode())
         {
             DoIdleModeUpdate();
         }
         else
         {
-            DoAttackModeUpdate(player.transform);
+            DoAttackModeUpdate();
         }
     }
 
@@ -94,9 +88,9 @@ public class DarkMushroomController : AbstractEntityController
         }
     }
 
-    private void DoAttackModeUpdate(Transform player)
+    private void DoAttackModeUpdate()
     {
-        dir = player.position - transform.position;
+        dir = player.transform.position - transform.position;
         MoveEntityOnDirection(dir);
     }
 
