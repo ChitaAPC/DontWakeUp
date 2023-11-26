@@ -25,7 +25,7 @@ public class MapGenerator : MonoBehaviour
     [SerializeField] EnemySpawnHandler enemySpawnHandler;
 
 
-    public const int MapSize = 32;
+    public const int MapSize = 16;//32;
     private byte[,] map = new byte[MapSize, MapSize];
 
     private Vector2Int playerSpawnCell;
@@ -80,8 +80,6 @@ public class MapGenerator : MonoBehaviour
         return unitCell;
     }
 
-
-
     private bool IsRoomValid(int roomX, int roomY, int roomW, int roomH)
     {
 
@@ -109,11 +107,10 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
-
     private void PlanMap()
     {
-        int req3 = 16;
-        int req2Attemp = 128;
+        int req3 = MapSize / 2;
+        int req2Attemp = MapSize * 4;
 
         while (req3 > 0)
         {
@@ -151,8 +148,6 @@ public class MapGenerator : MonoBehaviour
             }
         }
     }
-
-
 
     private void SpawnMap()
     {
@@ -224,9 +219,4 @@ public class MapGenerator : MonoBehaviour
             }
         }
     }
-
-
-
-
-
 }
