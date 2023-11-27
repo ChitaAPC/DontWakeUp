@@ -212,7 +212,7 @@ public class MapGenerator : MonoBehaviour
                         }
                         catch (System.IndexOutOfRangeException)
                         {
-                            Debug.Log($"For current {x}, {y} had an exception at {x + xi}, {y + yi}");
+                            Debug.Log($"For current ({x}, {y}) had an exception at ({x + xi}, {y + yi})");
                         }
                     }
                 }

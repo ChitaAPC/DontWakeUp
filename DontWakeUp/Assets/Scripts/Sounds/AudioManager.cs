@@ -99,7 +99,8 @@ public class AudioManager : MonoBehaviour
         if (playingSong != null)
         {
             songToPlay.source.time = playingSong.source.time;
-            StartCoroutine(FadeOutSong(playingSong, 0.2f));
+            songToPlay.source.timeSamples = playingSong.source.timeSamples;
+            StartCoroutine(FadeOutSong(playingSong, 2f));
         }
         songToPlay.source.Play();
     }
@@ -110,8 +111,8 @@ public class AudioManager : MonoBehaviour
         float wantedVol = playingSong.source.volume;
         while (t < fadeDiration)
         {
-            t += Time.fixedUnscaledDeltaTime;
-            playingSong.source.volume -= 0.1f;
+            t += Time.unscaledDeltaTime;
+            playingSong.source.volume -= ((1f/fadeDiration)*Time.unscaledDeltaTime);
             yield return null;
         }
         playingSong.source.Stop();

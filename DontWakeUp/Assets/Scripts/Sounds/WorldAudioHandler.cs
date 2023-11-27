@@ -25,22 +25,22 @@ public class WorldAudioHandler : MonoBehaviour
     private void OnBattleStart(AbstractEntityController player, AbstractEntityController enemy)
     {
         //todo: replace that with ChangeSongs to play the correct song
-        AudioManager.instance.PausePlayingSong();
         if (enemy.tag == "Boss")
         {
+            AudioManager.instance.PausePlayingSong();
             AudioManager.instance.PlaySong("BossIntro");
             AudioManager.instance.PlaySongWithDelay("BossLoop", AudioManager.instance.GetSongLength("BossIntro"));
         }
         else
         {
             //todo fade world music
-            //AudioManager.instance.FadeSongSynced("");
+            AudioManager.instance.FadeSongSynced("CombatSong");
         }
     }
 
     private void OnBattleEnd(AbstractEntityController player, AbstractEntityController enemy)
     {
-        AudioManager.instance.ChangeSongs("WorldSong", false);
+        AudioManager.instance.FadeSongSynced("WorldSong");
     }
 
 
