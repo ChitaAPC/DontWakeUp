@@ -25,14 +25,167 @@ public class MapGenerator : MonoBehaviour
     [SerializeField] EnemySpawnHandler enemySpawnHandler;
 
 
+    [Header("Room Sprites")]
+    [SerializeField] Sprite floorSprite;
+    [SerializeField] Sprite horizontalWallSprite;
+    [SerializeField] Sprite verticalWallSprite;
+    [SerializeField] Sprite cournerWallSprite;
+    [SerializeField] Sprite rockSprite;
+    [SerializeField] Sprite holeSpritte;
+
+    #region OLD SPAWN SETTINGS
     public const int MapSize = 16;//32;
     private byte[,] map = new byte[MapSize, MapSize];
 
     private Vector2Int playerSpawnCell;
     private Vector2Int bossSpawnCell;
 
+    #endregion
+
+
+    #region NEW SPAWN SETTINGS
+
+    
+    private const float min_room_size = 5f;
+    private const float max_room_size = 20f;
+
+    private const float max_loop_distance = 60f;
+
+    private const float min_dist_for_boss_room = 300f;
+
+    private const int maxDeadEndSeg = 3;
+
+    private enum Segment
+    {
+        straight,
+        bend,
+        loop
+    }
+
+    #endregion
 
     private void Start()
+    {
+        SpawnMap();
+    }
+
+    private void SpawnMap()
+    {
+        Vector2 dir = new Vector2(Random.Range(-1, 2), Random.Range(-1, 2));
+        if (dir == Vector2.zero)
+        {
+            dir = new Vector2(0f, 1f);
+        }
+
+        //temp
+        dir = new Vector2(1f, 0f);
+
+        Vector2 roomSize = SpawnStartingRoom(dir);
+
+        Debug.Log($"Room size = {roomSize}");
+
+        if (dir.x < 0)
+        {
+            //come in from left of the new room
+            SpawnDeadEndSeg(new Vector2(roomSize.x / 2f, 0f), false, false, false, true);
+        }
+        if (dir.x > 0)
+        {
+            //come in from the right of the new room
+            SpawnDeadEndSeg(new Vector2(-roomSize.x / 2f, 0f), false, true, false, false);
+        }
+
+        if (dir.y > 0)
+        {
+            //come in from the bot of the new room
+            SpawnDeadEndSeg(new Vector2(0f, roomSize.y / 2f), false, false, true, false);
+        }
+        if (dir.y < 0)
+        {
+            //come in from the top of the new room
+            SpawnDeadEndSeg(new Vector2(0f, -roomSize.y / 2f), true, false, false, false);
+        }
+
+
+    }
+
+    private Vector2 SpawnStartingRoom(Vector2 dir)
+    {
+        float width = Random.Range(min_room_size, max_room_size);
+        float height = Random.Range(min_room_size, max_room_size);
+        GameObject room = SpawnRoom(width, height, dir.y>0, dir.x>0, dir.y<0, dir.x<0);
+        room.transform.parent = transform;
+        Player.transform.position = new Vector3(0f,0f,0f);
+        return new Vector2(width, height);
+    }
+
+    private void SpawnDeadEndSeg(Vector2 entrance, bool top, bool right, bool bot, bool left)
+    {
+        int segLen = Random.Range(1, maxDeadEndSeg + 1);
+        float w, h;
+        GameObject room;
+
+        Debug.Log($"Curent entrance = {entrance}");
+
+        for (int i = 1; i < segLen; i++)
+        {
+            w = Random.Range(min_room_size, max_room_size);
+            h = Random.Range(min_room_size, max_room_size);
+
+            room = SpawnRoom(w, h, top || bot, right || left, top || bot, right || left);
+
+            if (top)
+            {
+                room.transform.position = new Vector3(entrance.x, entrance.y - (h / 2f));
+                entrance = room.transform.position - new Vector3(0f, h / 2f);
+            }
+            else if (bot)
+            {
+                room.transform.position = new Vector3(entrance.x, entrance.y + (h / 2f));
+                entrance = room.transform.position + new Vector3(0f, h / 2f);
+            }
+            else if (right)
+            {
+                room.transform.position = new Vector3(entrance.x - (w / 2f), entrance.y);
+                entrance = room.transform.position - new Vector3(w / 2f, 0f);
+            }
+            else
+            {
+                room.transform.position = new Vector3(entrance.x + (w / 2f), entrance.y);
+                entrance = room.transform.position + new Vector3(w / 2f, 0f);
+            }
+            room.transform.parent = transform;
+            Debug.Log($"Updated entrance {entrance}");
+        }
+
+        w = Random.Range(min_room_size, max_room_size);
+        h = Random.Range(min_room_size, max_room_size);
+
+        room = SpawnRoom(w, h, top, right, bot, left);
+
+        if (top)
+        {
+            room.transform.position = new Vector3(entrance.x, entrance.y - (h / 2f));
+        }
+        else if (bot)
+        {
+            room.transform.position = new Vector3(entrance.x, entrance.y + (h / 2f));
+        }
+        else if (right)
+        {
+            room.transform.position = new Vector3(entrance.x - (w / 2f), entrance.y);
+        }
+        else
+        {
+            room.transform.position = new Vector3(entrance.x + (w / 2f), entrance.y);
+        }
+        room.transform.parent = transform;
+    }
+
+
+    #region OLD SPAWN
+
+    private void GenerateMap_Old()
     {
         int playerQuad = Random.Range(0, 4);
         int bossQuad = Random.Range(0, 4);
@@ -47,7 +200,7 @@ public class MapGenerator : MonoBehaviour
         enemySpawnHandler.SetSpawnVariables(playerSpawnCell, bossSpawnCell, roomUnitSize, Player);
 
         PlanMap();
-        SpawnMap();
+        SpawnMap_old();
     }
 
     private Vector2Int InitialiseSpecialUnitPlacement(int quad, GameObject unit)
@@ -149,7 +302,7 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
-    private void SpawnMap()
+    private void SpawnMap_old()
     {
         int x = 0;
         int y = 0;
@@ -218,5 +371,229 @@ public class MapGenerator : MonoBehaviour
                 }
             }
         }
+    }
+
+    #endregion
+
+
+    private GameObject SpawnRoom(float horizontalSize, float verticalSize, bool topOpen, bool rightOpen, bool botOpen, bool leftOpen) 
+    {
+        GameObject room = new GameObject($"Room({horizontalSize} by {verticalSize})");
+
+        CreateFloor(horizontalSize, verticalSize, room);
+        
+        CreateHorizontalWall(horizontalSize, verticalSize, room, true, topOpen);
+        CreateHorizontalWall(horizontalSize, verticalSize, room, false, botOpen);
+
+        CreateCournerWall(horizontalSize, verticalSize, room, true, true);
+        CreateCournerWall(horizontalSize, verticalSize, room, true, false);
+        CreateCournerWall(horizontalSize, verticalSize, room, false, true);
+        CreateCournerWall(horizontalSize, verticalSize, room, false, false);
+
+        CreateVerticalWall(horizontalSize, verticalSize, room, true, leftOpen);
+        CreateVerticalWall(horizontalSize, verticalSize, room, false, rightOpen);
+
+        CreateExtraSprites(horizontalSize, verticalSize, room, topOpen, rightOpen, botOpen, leftOpen);
+
+        return room;
+    }
+
+    private void CreateFloor(float horizontalSize, float verticalSize, GameObject room)
+    {
+        GameObject floor = new GameObject("floor");
+        SpriteRenderer sr = floor.AddComponent<SpriteRenderer>();
+        sr.sprite = floorSprite;
+        sr.drawMode = SpriteDrawMode.Tiled;
+        sr.size = new Vector2(horizontalSize, verticalSize);
+        sr.sortingOrder = -1;
+
+        floor.transform.parent = room.transform;
+        floor.transform.localPosition = new Vector3(0, 0, 0);
+    }
+
+    private GameObject CreateHorizontalWall(float horizontalSize, float verticalSize, GameObject room, bool isTop, bool isOpen)
+    {
+        if (isOpen)
+        {
+            GameObject wall1 = CreateHorizontalWall(horizontalSize / 2, verticalSize, room, isTop, false);
+            GameObject wall2 = CreateHorizontalWall(horizontalSize / 2, verticalSize, room, isTop, false);
+
+            wall1.transform.localPosition = new Vector3(horizontalSize / 4, wall1.transform.localPosition.y, 0f);
+            wall2.transform.localPosition = new Vector3(-horizontalSize / 4, wall2.transform.localPosition.y, 0f);
+            return null;
+        }
+
+        GameObject wall = new GameObject("bottom wall");
+        if (isTop)
+            wall.name = "top wall";
+
+        SpriteRenderer sr = wall.AddComponent<SpriteRenderer>();
+        sr.sprite = horizontalWallSprite;
+        sr.drawMode = SpriteDrawMode.Tiled;
+        sr.size = new Vector2(horizontalSize - 2, 1f);
+        sr.flipY = !isTop;
+
+        BoxCollider2D bc = wall.AddComponent<BoxCollider2D>();
+        bc.size = new Vector2(horizontalSize - 2, 0.5f);
+        //if (isTop)
+        bc.offset = new Vector2(0f, 0.25f);
+        //else
+        //    bc.offset = new Vector2(0f, -0.25f);
+
+        wall.transform.parent = room.transform;
+        
+        if (isTop)
+            wall.transform.localPosition = new Vector3(0, (verticalSize / 2) - 0.5f, 0f);
+        else
+            wall.transform.localPosition = new Vector3(0, -((verticalSize / 2) - 0.5f), 0f);
+
+        return wall;
+    }
+
+    private void CreateCournerWall(float horizontalSize, float verticalSize, GameObject room, bool isTop, bool isLeft)
+    {
+        GameObject courner = new GameObject();
+
+        if (isTop)
+        {
+            if (isLeft)
+                courner.name = "Top left courner";
+            else
+                courner.name = "Top right courner";
+        }
+        else
+        {
+            if (isLeft)
+                courner.name = "Bot left courner";
+            else
+                courner.name = "Bot right courner";
+        }
+
+        SpriteRenderer sr = courner.AddComponent<SpriteRenderer>();
+        sr.sprite = cournerWallSprite;
+        sr.drawMode = SpriteDrawMode.Tiled;
+        sr.size = new Vector2(1f, 1f);
+        sr.flipX = !isLeft;
+        sr.flipY = !isTop;
+        BoxCollider2D bc = courner.AddComponent<BoxCollider2D>();
+
+        if (isLeft)
+        {
+            bc.size = new Vector2(0.5f, 1f);
+            bc.offset = new Vector2(-0.25f, 0f);
+        }
+        else
+        {
+            bc.size = new Vector2(0.5f, 1f);
+            bc.offset = new Vector2(0.25f, 0f);
+        }
+
+        courner.transform.parent = room.transform;
+        float x = (horizontalSize / 2) - 0.5f;
+        float y = (verticalSize / 2) - 0.5f;
+        if (isLeft)
+            x = -x;
+        if (!isTop)
+            y = -y;
+
+        courner.transform.localPosition = new Vector3(x, y, 0f);
+
+    }
+
+    private GameObject CreateVerticalWall(float horizontalSize, float verticalSize, GameObject room, bool isLeft, bool isOpen)
+    {
+        if (isOpen)
+        {
+            GameObject wall1 = CreateVerticalWall(horizontalSize, verticalSize / 2f, room, isLeft, false);
+            GameObject wall2 = CreateVerticalWall(horizontalSize, verticalSize / 2f, room, isLeft, false);
+
+            wall1.transform.localPosition = new Vector3(wall1.transform.localPosition.x, verticalSize / 4f, 0f);
+            wall2.transform.localPosition = new Vector3(wall2.transform.localPosition.x, -verticalSize / 4f, 0f);
+
+            return null;
+        }
+
+        GameObject wall = new GameObject("right wall");
+        if (isLeft)
+            wall.name = "left wall";
+
+        SpriteRenderer sr = wall.AddComponent<SpriteRenderer>();
+        sr.sprite = verticalWallSprite;
+        sr.drawMode = SpriteDrawMode.Tiled;
+        sr.size = new Vector2(0.5f, verticalSize - 2f);
+        sr.flipX = isLeft;
+
+        BoxCollider2D bc = wall.AddComponent<BoxCollider2D>();
+        bc.size = new Vector2(0.5f, verticalSize - 2f);
+        wall.transform.parent = room.transform;
+
+        if (isLeft)
+            wall.transform.localPosition = new Vector3((horizontalSize / 2) - 0.25f, 0f, 0f);
+        else
+            wall.transform.localPosition = new Vector3(-((horizontalSize/ 2) - 0.25f), 0f, 0f);
+
+        return wall;
+    }
+
+    private void CreateExtraSprites(float horizontalSize, float verticalSize, GameObject room, bool topOpen, bool rightOpen, bool botOpen, bool leftOpen)
+    {
+
+        List<Vector3> pointsToAvoid = new List<Vector3>();
+
+        if (topOpen)
+            pointsToAvoid.Add(new Vector3(0f, verticalSize/2f));
+        
+        if (botOpen)
+            pointsToAvoid.Add(new Vector3(0f, -verticalSize/2f));
+        
+        if (leftOpen)
+            pointsToAvoid.Add(new Vector3(-horizontalSize / 2f, 0f));
+        
+        if (rightOpen)
+            pointsToAvoid.Add(new Vector3(horizontalSize / 2f, 0f));
+
+        for (float perim = 15f; perim <= 30f; perim += 5f)
+        {
+            if (horizontalSize + verticalSize >= perim)
+            {
+                float r = Random.value;
+                //maybve add one extra bit
+                if (r <= 0.333f)
+                {
+                    //spawn rock
+                    pointsToAvoid.Add(SpawnExtraSpriteInRoom(horizontalSize, verticalSize, room, pointsToAvoid, rockSprite));
+                }
+                else if (r <= 0.666f)
+                {
+                    pointsToAvoid.Add(SpawnExtraSpriteInRoom(horizontalSize, verticalSize, room, pointsToAvoid, holeSpritte));
+                }
+            }
+        }
+    }
+
+    private Vector3 SpawnExtraSpriteInRoom(float horizontalSize, float verticalSize, GameObject room, List<Vector3> positionsToAvoid, Sprite sprite)
+    {
+        Vector3 pos = new Vector3(Random.Range(-((horizontalSize / 2f) - 1f), (horizontalSize / 2f) - 1f), Random.Range(-((verticalSize / 2f) - 1f), (verticalSize / 2f) - 1f), 0f);
+
+        while (positionsToAvoid.FindAll(p=> (p - pos).sqrMagnitude < 3f).Count > 0)
+        {
+            pos = new Vector3(Random.Range(-((horizontalSize / 2f) - 1f), (horizontalSize/2f) - 1f), Random.Range(-((verticalSize / 2f) - 1f), (verticalSize/2f) - 1f), 0f);
+        }
+
+        GameObject extra = new GameObject(sprite.name);
+        SpriteRenderer sr = extra.AddComponent<SpriteRenderer>();
+        sr.sprite = sprite;
+        sr.sortingOrder = 1;
+
+        CircleCollider2D cc = extra.AddComponent<CircleCollider2D>();
+        cc.radius = 0.8f;
+
+        float scale = Random.Range(0.5f, 1f);
+
+        extra.transform.localScale = new Vector3(scale, scale, 1f);
+        extra.transform.parent = room.transform;
+        extra.transform.localPosition = pos;
+
+        return pos;
     }
 }
