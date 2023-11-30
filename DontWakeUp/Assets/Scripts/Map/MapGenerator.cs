@@ -9,18 +9,7 @@ public class MapGenerator : MonoBehaviour
     [Header("Special Units")]
     [SerializeField] private GameObject Player;
     [SerializeField] private GameObject Boss;
-    [Range(0.2f, 0.5f)]
-    [SerializeField] private float SpecialUnitStartingRoomOffsetMin;
-    [Range(0.5f, 0.8f)]
-    [SerializeField] private float SpecialUnitStartingRoomOffsetMax;
-
-
-    [Header("Rooms")]
-    [SerializeField] private int roomUnitSize;
-    [SerializeField] private GameObject oneByOneRoom;
-    [SerializeField] private GameObject twoByTwoRoom;
-    [SerializeField] private GameObject fourByFourRoom;
-
+    
     [Header("Units")]
     [SerializeField] EnemySpawnHandler enemySpawnHandler;
 
@@ -33,19 +22,6 @@ public class MapGenerator : MonoBehaviour
     [SerializeField] Sprite rockSprite;
     [SerializeField] Sprite holeSpritte;
 
-    #region OLD SPAWN SETTINGS
-    public const int MapSize = 16;//32;
-    private byte[,] map = new byte[MapSize, MapSize];
-
-    private Vector2Int playerSpawnCell;
-    private Vector2Int bossSpawnCell;
-
-    #endregion
-
-
-    #region NEW SPAWN SETTINGS
-
-    
     private const float min_room_size = 5f;
     private const float max_room_size = 20f;
     private const int segmentRoomLenMin = 3;
@@ -56,7 +32,7 @@ public class MapGenerator : MonoBehaviour
 
     private const int maxDeadEndSeg = 3;
 
-    #endregion
+
 
     private void Start()
     {
