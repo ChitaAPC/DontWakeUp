@@ -71,6 +71,14 @@ public class AudioManager : MonoBehaviour
         //todo
     }
 
+    public void StopAllMusic()
+    {
+        foreach (Sound s in songs)
+        {
+            s.source.Stop();
+        }
+    }
+
     public void ChangeSongs(string name, bool shouldPause)
     {
         Sound songToPlay = GetSongByName(name);
@@ -119,15 +127,51 @@ public class AudioManager : MonoBehaviour
         playingSong.source.volume = wantedVol;
     }
 
-
-    //temp?
-    public void PausePlayingSong()
+    public void SetWantedFadeInSong(string song)
     {
-        Sound playingSong = GetPlayingSong();
-        if (playingSong != null)
-        {
-            playingSong.source.Pause();
-        }
-
+        songToFadeIn = song;
     }
+
+    public void PlayTwoSongsInSync(string song1, string song2)
+    {
+        GetSongByName(song1).source.Play();
+        GetSongByName(song2).source.Play();
+        GetSongByName(song2).source.volume = 0f;
+        shouldFadeSongs = true;
+        songToFadeIn = song1;
+    }
+
+    public void SetFadeStop()
+    {
+        shouldFadeSongs = false;
+    }
+
+    private bool shouldFadeSongs = false;
+    private string songToFadeIn;
+
+    private void Update()
+    {
+        if (shouldFadeSongs)
+        {
+            foreach (Sound s in songs)
+            {
+                if (s.source.isPlaying)
+                {
+                    if (s.name == songToFadeIn)
+                    {
+                        if (s.source.volume < 1f)
+                            s.source.volume += 0.5f * Time.unscaledDeltaTime;
+                    }
+                    else
+                    {
+                        if (s.source.volume > 0f)
+                            s.source.volume -= 0.5f * Time.unscaledDeltaTime;
+                    }
+                }
+            }
+        }
+        
+        
+    }
+
 }

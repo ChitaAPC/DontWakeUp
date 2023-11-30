@@ -174,6 +174,8 @@ public class BattleManager : MonoBehaviour
         }
         else
         {
+            AudioManager.instance.SetFadeStop();
+            AudioManager.instance.StopAllMusic();
             SceneManager.LoadScene("GameOverScene");
         }
     }
@@ -182,11 +184,21 @@ public class BattleManager : MonoBehaviour
     {
         if (enemy.hp <= 0f)
         {
-            player.ApplyBuffsModifiers(enemy.buffs);
-            EnemyHandler.RemoveEnemy(enemy);
-            BattleUiCanvas.SetActive(false);
-            OverworldUiCanvas.SetActive(true);
             Time.timeScale = 1f;
+
+            if (enemy.tag == "Boss")
+            {
+                AudioManager.instance.SetFadeStop();
+                AudioManager.instance.StopAllMusic();
+                SceneManager.LoadScene("GameWinScene");
+            }
+            else
+            {
+                player.ApplyBuffsModifiers(enemy.buffs);
+                EnemyHandler.RemoveEnemy(enemy);
+                BattleUiCanvas.SetActive(false);
+                OverworldUiCanvas.SetActive(true);
+            }
         }
         else
         {

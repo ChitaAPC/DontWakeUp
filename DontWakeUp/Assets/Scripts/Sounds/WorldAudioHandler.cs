@@ -19,7 +19,9 @@ public class WorldAudioHandler : MonoBehaviour
             return;
         }
 
-        AudioManager.instance.ChangeSongs("WorldSong", false);
+        AudioManager.instance.PlayTwoSongsInSync("WorldSong", "CombatSong");
+
+        //AudioManager.instance.ChangeSongs("WorldSong", false);
     }
 
     private void OnBattleStart(AbstractEntityController player, AbstractEntityController enemy)
@@ -27,20 +29,19 @@ public class WorldAudioHandler : MonoBehaviour
         //todo: replace that with ChangeSongs to play the correct song
         if (enemy.tag == "Boss")
         {
-            AudioManager.instance.PausePlayingSong();
+            AudioManager.instance.StopAllMusic();
             AudioManager.instance.PlaySong("BossIntro");
             AudioManager.instance.PlaySongWithDelay("BossLoop", AudioManager.instance.GetSongLength("BossIntro"));
         }
         else
         {
-            //todo fade world music
-            AudioManager.instance.FadeSongSynced("CombatSong");
+            AudioManager.instance.SetWantedFadeInSong("CombatSong");
         }
     }
 
     private void OnBattleEnd(AbstractEntityController player, AbstractEntityController enemy)
     {
-        AudioManager.instance.FadeSongSynced("WorldSong");
+        AudioManager.instance.SetWantedFadeInSong("WorldSong");
     }
 
 

@@ -75,4 +75,16 @@ MonoBehaviour:
     pitch: 1
     loop: 1
     source: {fileID: 0}
+  - name: GoodEnd
+    clip: {fileID: 8300000, guid: 67a215095e458794e9a1f9b9496831db, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: BadEnd
+    clip: {fileID: 8300000, guid: 49742d58baf3a5e48a6de73836fc8f59, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 0
+    source: {fileID: 0}
   FSXs: []
