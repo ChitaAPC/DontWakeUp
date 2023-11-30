@@ -49,9 +49,8 @@ public class MapGenerator : MonoBehaviour
     private const float min_room_size = 5f;
     private const float max_room_size = 20f;
 
-    private const float max_loop_distance = 60f;
 
-    private const float min_dist_for_boss_room = 300f;
+    private const int min_dist_for_boss_room = 25;
 
     private const int maxDeadEndSeg = 3;
 
@@ -70,36 +69,89 @@ public class MapGenerator : MonoBehaviour
             dir = new Vector2(0f, 1f);
         }
 
-        dir = new Vector2(1f, 0f);
-
         Vector2 roomSize = SpawnStartingRoom(dir);
 
-        if (dir.x < 0)
+        if (dir.x != 0 && dir.y != 0)
         {
-            //come in from left of the new room
-            SpawnDeadEndSeg(new Vector2(roomSize.x / 2f, 0f), false, false, false, true);
-        }
-        if (dir.x > 0)
-        {
-            //come in from the right of the new room
-            SpawnDeadEndSeg(new Vector2(-roomSize.x / 2f, 0f), false, true, false, false);
+            if (Random.value >= 0.5)
+            {
+                //x dir for deadend
+                if (dir.x < 0)
+                {
+                    //come in from left of the new room
+                    SpawnDeadEndSeg(new Vector2(roomSize.x / 2f, 0f), false, false, false, true);
+                }
+                if (dir.x > 0)
+                {
+                    //come in from the right of the new room
+                    SpawnDeadEndSeg(new Vector2(-roomSize.x / 2f, 0f), false, true, false, false);
+                }
+                dir = new Vector2(0, dir.y);
+            }
+            else
+            {
+                //y dir for deadend
+                if (dir.y > 0)
+                {
+                    //come in from the bot of the new room
+                    SpawnDeadEndSeg(new Vector2(0f, roomSize.y / 2f), false, false, true, false);
+                }
+                if (dir.y < 0)
+                {
+                    //come in from the top of the new room
+                    SpawnDeadEndSeg(new Vector2(0f, -roomSize.y / 2f), true, false, false, false);
+                }
+                dir = new Vector2(dir.x, 0f);
+            }
+
+            int length = Random.Range(2, 5);
+            Vector2 entrance;
+            if (dir.x < 0)
+                entrance = new Vector2(roomSize.x / 2f, 0f);
+            else if (dir.x > 0)
+                entrance = new Vector2(-roomSize.x / 2f, 0f);
+            else if (dir.y > 0)
+                entrance = new Vector2(0f, roomSize.y / 2f);
+            else
+                entrance = new Vector2(0f, -roomSize.y / 2f);
+
+            int traversed = 0;
+            bool canStop = false;
+            Vector2 prevDir = Vector2.zero;
+            while (!canStop)
+            {
+                entrance = SpawnNextMainSegment(dir, entrance, length, dir == prevDir);
+                traversed += length;
+
+                if (traversed >= min_dist_for_boss_room)
+                {
+                    canStop = Random.value >= 0.5f;
+                }
+                length = Random.Range(3, 6);
+
+                if (prevDir != dir)
+                    prevDir = dir;
+                else
+                {
+                    //todo figure out which ways can the main segment turn
+                }
+                
+            }
+            
         }
 
-        if (dir.y > 0)
-        {
-            //come in from the bot of the new room
-            SpawnDeadEndSeg(new Vector2(0f, roomSize.y / 2f), false, false, true, false);
-        }
-        if (dir.y < 0)
-        {
-            //come in from the top of the new room
-            SpawnDeadEndSeg(new Vector2(0f, -roomSize.y / 2f), true, false, false, false);
-        }
+
+
+        
+
+        
     }
 
-    private void SpawnNextMainSegment(Vector2 dir, Vector2 entrance, float length)
+    private Vector2 SpawnNextMainSegment(Vector2 dir, Vector2 entrance, int length, bool allowDeadEnd)
     {
-        
+
+
+        return entrance;
     }
 
     private Vector2 SpawnStartingRoom(Vector2 dir)
