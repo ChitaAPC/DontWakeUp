@@ -60,7 +60,9 @@ public class MapGenerator : MonoBehaviour
 
     private void Start()
     {
+        enemySpawnHandler.SetPlayer(Player);
         SpawnMap();
+        enemySpawnHandler.BegineEnemyCheck();
     }
 
     private void SpawnMap()
@@ -196,6 +198,7 @@ public class MapGenerator : MonoBehaviour
         room.transform.parent = transform;
 
         room.name = $"{room.name} - courner";
+        enemySpawnHandler.SpawnEnemyInRoom(room.transform.position, w, h);
 
         return entrance;
     }
@@ -331,6 +334,9 @@ public class MapGenerator : MonoBehaviour
                 entrance = room.transform.position + new Vector3(w / 2f, 0f);
             }
             room.transform.parent = transform;
+
+            //spawn enemies
+            enemySpawnHandler.SpawnEnemyInRoom(room.transform.position, w, h);
         }
 
         if (top)
@@ -385,6 +391,7 @@ public class MapGenerator : MonoBehaviour
             room.transform.position = new Vector3(entrance.x + (w / 2f), entrance.y);
         }
         room.transform.parent = transform;
+        enemySpawnHandler.SpawnEnemyInRoom(room.transform.position, w, h);
     }
 
     private GameObject SpawnRoom(float horizontalSize, float verticalSize, bool topOpen, bool rightOpen, bool botOpen, bool leftOpen) 
