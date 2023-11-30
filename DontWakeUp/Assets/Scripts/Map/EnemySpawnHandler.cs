@@ -63,7 +63,6 @@ public class EnemySpawnHandler : MonoBehaviour
             unit.SetActive(false);
             lock (enemies)
                 enemies.Add(enemy);
-            
         }
     }
 

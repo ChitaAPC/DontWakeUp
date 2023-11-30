@@ -13,7 +13,6 @@ public class MapGenerator : MonoBehaviour
     [Header("Units")]
     [SerializeField] EnemySpawnHandler enemySpawnHandler;
 
-
     [Header("Room Sprites")]
     [SerializeField] Sprite floorSprite;
     [SerializeField] Sprite horizontalWallSprite;
