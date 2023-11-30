@@ -55,13 +55,6 @@ public class MapGenerator : MonoBehaviour
 
     private const int maxDeadEndSeg = 3;
 
-    private enum Segment
-    {
-        straight,
-        bend,
-        loop
-    }
-
     #endregion
 
     private void Start()
@@ -77,12 +70,9 @@ public class MapGenerator : MonoBehaviour
             dir = new Vector2(0f, 1f);
         }
 
-        //temp
         dir = new Vector2(1f, 0f);
 
         Vector2 roomSize = SpawnStartingRoom(dir);
-
-        Debug.Log($"Room size = {roomSize}");
 
         if (dir.x < 0)
         {
@@ -105,8 +95,11 @@ public class MapGenerator : MonoBehaviour
             //come in from the top of the new room
             SpawnDeadEndSeg(new Vector2(0f, -roomSize.y / 2f), true, false, false, false);
         }
+    }
 
-
+    private void SpawnNextMainSegment(Vector2 dir, Vector2 entrance, float length)
+    {
+        
     }
 
     private Vector2 SpawnStartingRoom(Vector2 dir)
@@ -119,20 +112,99 @@ public class MapGenerator : MonoBehaviour
         return new Vector2(width, height);
     }
 
-    private void SpawnDeadEndSeg(Vector2 entrance, bool top, bool right, bool bot, bool left)
+    private Vector2 SpawnCorridor(Vector2 entrance, int rooms, bool top, bool right, bool bot, bool left, bool allowDeadEnd, float maxW = max_room_size, float maxH = max_room_size)
     {
-        int segLen = Random.Range(1, maxDeadEndSeg + 1);
-        float w, h;
-        GameObject room;
+        float w = 0;
+        float h = 0;
+        GameObject room = null;
 
-        Debug.Log($"Curent entrance = {entrance}");
-
-        for (int i = 1; i < segLen; i++)
+        for (int i = 0; i < rooms; i++)
         {
-            w = Random.Range(min_room_size, max_room_size);
-            h = Random.Range(min_room_size, max_room_size);
+            w = Random.Range(min_room_size, maxW);
+            h = Random.Range(min_room_size, maxH);
 
-            room = SpawnRoom(w, h, top || bot, right || left, top || bot, right || left);
+            bool deadEnd = Random.value < 0.2f && allowDeadEnd;
+
+            if (deadEnd)
+            {
+                if (top || bot)
+                {
+                    float r = Random.value;
+                    if (r <= 0.333f)
+                    {
+                        //only R
+                        room = SpawnRoom(w, h, true, true, true, false);
+                        if (top)
+                            SpawnDeadEndSeg(new Vector3(entrance.x - (w / 2f), entrance.y - (h / 2f)), false, true, false, false, max_room_size, h);
+                        else
+                            SpawnDeadEndSeg(new Vector3(entrance.x - (w / 2f), entrance.y + (h / 2f)), false, true, false, false, max_room_size, h);
+                    }
+                    else if (r <= 0.666f)
+                    {
+                        //only L
+                        room = SpawnRoom(w, h, true, false, true, true);
+                        if (top)
+                            SpawnDeadEndSeg(new Vector3(entrance.x + (w / 2f), entrance.y - (h / 2f)), false, false, false, true, max_room_size, h);
+                        else
+                            SpawnDeadEndSeg(new Vector3(entrance.x + (w / 2f), entrance.y + (h / 2f)), false, false, false, true, max_room_size, h);
+                    }
+                    else
+                    {
+                        //both L and R
+                        room = SpawnRoom(w, h, true, true, true, true);
+                        if (top)
+                        {
+                            SpawnDeadEndSeg(new Vector3(entrance.x - (w / 2f), entrance.y - (h / 2f)), false, true, false, false, max_room_size, h);
+                            SpawnDeadEndSeg(new Vector3(entrance.x + (w / 2f), entrance.y - (h / 2f)), false, false, false, true, max_room_size, h);
+                        }
+                        else
+                        {
+                            SpawnDeadEndSeg(new Vector3(entrance.x - (w / 2f), entrance.y + (h / 2f)), false, true, false, false, max_room_size, h);
+                            SpawnDeadEndSeg(new Vector3(entrance.x + (w / 2f), entrance.y + (h / 2f)), false, false, false, true, max_room_size, h);
+                        }
+                    }
+                }
+                else
+                {
+                    float r = Random.value;
+                    if (r <= 0.333f)
+                    {
+                        //only top
+                        room = SpawnRoom(w, h, true, true, false, true);
+                        if (right)
+                            SpawnDeadEndSeg(new Vector3(entrance.x - (w / 2f), entrance.y + (h / 2f)), false, false, true, false, w, max_room_size);
+                        else
+                            SpawnDeadEndSeg(new Vector3(entrance.x + (w / 2f), entrance.y + (h / 2f)), false, false, true, false, w, max_room_size);
+                    }
+                    else if (r <= 0.666f)
+                    {
+                        //only bot
+                        room = SpawnRoom(w, h, false, true, true, true);
+                        if (right)
+                            SpawnDeadEndSeg(new Vector3(entrance.x - (w / 2f), entrance.y - (h / 2f)), true, false, false, false, w, max_room_size);
+                        else
+                            SpawnDeadEndSeg(new Vector3(entrance.x + (w / 2f), entrance.y - (h / 2f)), true, false, false, false, w, max_room_size);
+
+                    }
+                    else
+                    {
+                        //both top and bot
+                        room = SpawnRoom(w, h, true, true, true, true);
+                        if (right)
+                        {
+                            SpawnDeadEndSeg(new Vector3(entrance.x - (w / 2f), entrance.y + (h / 2f)), false, false, true, false, w, max_room_size);
+                            SpawnDeadEndSeg(new Vector3(entrance.x - (w / 2f), entrance.y - (h / 2f)), true, false, false, false, w, max_room_size);
+                        }
+                        else
+                        {
+                            SpawnDeadEndSeg(new Vector3(entrance.x + (w / 2f), entrance.y + (h / 2f)), false, false, true, false, w, max_room_size);
+                            SpawnDeadEndSeg(new Vector3(entrance.x + (w / 2f), entrance.y - (h / 2f)), true, false, false, false, w, max_room_size);
+                        }
+                    }
+                }
+            }
+            else
+                room = SpawnRoom(w, h, top || bot, right || left, top || bot, right || left);
 
             if (top)
             {
@@ -155,13 +227,31 @@ public class MapGenerator : MonoBehaviour
                 entrance = room.transform.position + new Vector3(w / 2f, 0f);
             }
             room.transform.parent = transform;
-            Debug.Log($"Updated entrance {entrance}");
         }
 
-        w = Random.Range(min_room_size, max_room_size);
-        h = Random.Range(min_room_size, max_room_size);
+        if (top)
+            return room.transform.position - new Vector3(0f, h / 2f);
+        if (bot)
+            return room.transform.position + new Vector3(0f, h / 2f);
+        if (right)
+            return room.transform.position - new Vector3(w / 2f, 0f);
+        if (left)
+            return room.transform.position + new Vector3(w / 2f, 0f);
 
-        room = SpawnRoom(w, h, top, right, bot, left);
+        return new Vector2();
+    }
+
+    private void SpawnDeadEndSeg(Vector2 entrance, bool top, bool right, bool bot, bool left, float maxW = max_room_size, float maxH = max_room_size)
+    {
+        int segLen = Random.Range(0, maxDeadEndSeg);
+
+        if (segLen > 0)
+            entrance = SpawnCorridor(entrance, segLen, top, right, bot, left, false, maxW, maxH);
+
+        float w = Random.Range(min_room_size, maxW);
+        float h = Random.Range(min_room_size, maxH);
+
+        GameObject room = SpawnRoom(w, h, top, left, bot, right);
 
         if (top)
         {
