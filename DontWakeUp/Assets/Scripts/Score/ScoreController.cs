@@ -16,8 +16,8 @@ public class ScoreController : MonoBehaviour
     {
         int hours = Mathf.FloorToInt((timeStart + PlayerController.PlayerLevel * minutesPerLevel) / 60f);
         int minuts = Mathf.FloorToInt((timeStart + PlayerController.PlayerLevel * minutesPerLevel) % 60f);
-
-        scoreText.text = $"{hours:2D}:{minuts:2D}";
+        Time.timeScale = 1f;
+        scoreText.text = $"{hours:D2}:{minuts:D2}";
     }
 
 }
