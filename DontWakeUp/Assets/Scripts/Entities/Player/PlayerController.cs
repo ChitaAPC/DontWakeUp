@@ -6,10 +6,14 @@ public class PlayerController : AbstractEntityController
 {
     private Vector2 dir;
 
+    public static float PlayerLevel { get; private set; }
+
     protected override void OnAwake()
     {
         InnitialiseMovmeent();
         InnitialiseProperties();
+        PlayerLevel = 1f;
+        EventHandler.instance.BuffAppliedEvent.AddListener(OnBuffReceived);
     }
 
     private void InnitialiseProperties()
@@ -63,4 +67,18 @@ public class PlayerController : AbstractEntityController
         //player should never be controlled by the AI
         throw new System.NotImplementedException();
     }
+
+    private void OnBuffReceived(EntityStats buffs)
+    {
+        float pLevel = Mathf.Floor(PlayerLevel);
+        float expGained = 1f / pLevel;
+
+        if (Mathf.Floor(PlayerLevel + expGained) > pLevel)
+        {
+            LevelUp();
+        }
+        PlayerLevel += expGained;
+    }
+
+    
 }

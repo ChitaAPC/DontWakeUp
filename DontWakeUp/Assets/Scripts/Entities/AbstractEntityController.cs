@@ -6,9 +6,6 @@ using UnityEngine;
 public abstract class AbstractEntityController : MonoBehaviour
 {
 
-    private int winCount = 0;
-    private int winsToHeal = 3;
-
     protected GameObject player = null;
     protected float detectionRadious;
 
@@ -261,13 +258,6 @@ public abstract class AbstractEntityController : MonoBehaviour
         armour_emotional = Mathf.Max(0f, armour_emotional + buffs.armour_emotional);
 
         EventHandler.instance.BuffAppliedEvent.Invoke(buffs);
-        winCount++;
-
-        if (winCount >= winsToHeal)
-        {
-            winCount = 0;
-            hp = maxHp;
-        }
     }
 
     public Animator GetAnimator()
@@ -301,5 +291,22 @@ public abstract class AbstractEntityController : MonoBehaviour
         }
 
         return Vector2.Distance(transform.position, player.transform.position) >= detectionRadious;
+    }
+
+
+    protected void LevelUp()
+    {
+        maxHp *= 1.1f;
+        hp = maxHp;
+
+        attack_physical *= 1.01f;
+        attack_emotional *= 1.01f;
+
+        armour_physical *= 1.01f;
+        armour_emotional *= 1.01f;
+
+        movement_speed *= 1.01f;
+        combat_speed *= 1.01f;
+
     }
 }
