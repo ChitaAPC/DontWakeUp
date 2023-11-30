@@ -2764,6 +2764,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Teeth
       objectReference: {fileID: 0}
+    - target: {fileID: 4329160842445103729, guid: 6be257ca7afa4c14cbe79012131e172f, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4329160842445103733, guid: 6be257ca7afa4c14cbe79012131e172f, type: 3}
       propertyPath: m_RootOrder
       value: 2
