@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 650840639632567669}
   - component: {fileID: 650840639632567670}
   m_Layer: 0
-  m_Name: Spider Sworm
+  m_Name: Spider Swarm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
