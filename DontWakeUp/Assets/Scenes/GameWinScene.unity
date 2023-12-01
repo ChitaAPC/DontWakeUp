@@ -344,7 +344,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 30.7
+  m_fontSize: 28.15
   m_fontSizeBase: 30
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -569,7 +569,13 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 
+  m_text: 'Composer
+
+    Artist
+
+    Artist
+
+    Developer'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: f26eeee1918b7d74088f1f148788a064, type: 2}
   m_sharedMaterial: {fileID: 65011555783212310, guid: f26eeee1918b7d74088f1f148788a064, type: 2}
@@ -736,7 +742,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 24.9
+  m_fontSize: 25.5
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -844,7 +850,13 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 
+  m_text: 'Thomas Yau
+
+    Steph Carter
+
+    Lauren Winter
+
+    Alan Pedrassoli Chitayat'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: f26eeee1918b7d74088f1f148788a064, type: 2}
   m_sharedMaterial: {fileID: 65011555783212310, guid: f26eeee1918b7d74088f1f148788a064, type: 2}
