@@ -30,6 +30,7 @@ public class WorldAudioHandler : MonoBehaviour
         if (enemy.tag == "Boss")
         {
             AudioManager.instance.StopAllMusic();
+            AudioManager.instance.SetFadeStop();
             AudioManager.instance.PlaySong("BossIntro");
             AudioManager.instance.PlaySongWithDelay("BossLoop", AudioManager.instance.GetSongLength("BossIntro"));
         }
