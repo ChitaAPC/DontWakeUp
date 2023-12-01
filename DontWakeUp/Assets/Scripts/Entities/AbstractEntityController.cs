@@ -309,4 +309,9 @@ public abstract class AbstractEntityController : MonoBehaviour
         combat_speed *= 1.01f;
 
     }
+
+    public virtual void OnBattleStartLogic()
+    {
+        //do nothing by default
+    }
 }

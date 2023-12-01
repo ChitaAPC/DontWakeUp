@@ -108,6 +108,7 @@ public class BattleManager : MonoBehaviour
 
     private IEnumerator BattleCo(AbstractEntityController player, AbstractEntityController enemy)
     {
+        enemy.OnBattleStartLogic();
         while (player.hp > 0 && enemy.hp > 0)
         {
             playerImage.sprite = playerRenderer.sprite;
